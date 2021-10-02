@@ -1,3 +1,6 @@
+'''
+calculate the center of mass (COM) of a protein
+'''
 from Bio.PDB import PDBParser
 
 # create a PDBParser object
