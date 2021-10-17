@@ -1,3 +1,4 @@
+import pandas as pd
 from biopandas.pdb import PandasPdb
 from Bio.PDB import PDBParser
 from Bio.PDB.DSSP import DSSP
@@ -23,25 +24,25 @@ dssp = DSSP(model, "1uaz.pdb", dssp='mkdssp')
 
 atoms_out_list = []
 for i in range(len(ppdb.df['ATOM'].values)):
+    #pour eviter d'avoir list index out of range
     if ppdb.df['ATOM'].values[i][8] < len(list(dssp.keys())):
         a_key = list(dssp.keys())[ppdb.df['ATOM'].values[i][8] - 1]
         if dssp[a_key][3] > 0.0:
             atoms_out_list.append(ppdb.df['ATOM'].values[i])
 
-list_to_file('try1', atoms_out_list, 'w')
-print(atoms_out_list)
+
+df = pd.DataFrame(data= atoms_out_list)
+print(df)
 
 '''
 with open('file.txt', 'w') as f:
     for item in atoms_out_list:
         for element in item :
             f.write("%s" % element)
-q
+
 a_file = open("test.txt", "w")
 for row in atoms_out_list:
     np.savetxt(a_file, row, fmt='%s')
 a_file.close()
-
 '''
-
 
