@@ -33,4 +33,13 @@ for i in range(len(ppdb.df['ATOM'].values)):
 df = pd.DataFrame(data= atoms_out_list)
 df = df.drop(df.columns[[19,20]], axis=1)  #remove the last two colums of the df
 
+df_dssp = pd.DataFrame(data=dssp)
+df_dssp1 = df_dssp.iloc[:,[0,3]]
 
+#df_dssp1['0']= df_dssp1['0'].astype(int)
+#df['8']= df['8'].astype(int)
+
+#my_df = df_dssp1.merge(right= df, how= 'left', left_on= 0, right_on=5)
+
+#print(my_df)
+print(df_dssp1)
