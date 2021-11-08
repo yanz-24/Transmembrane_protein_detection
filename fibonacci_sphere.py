@@ -1,5 +1,14 @@
 import math
+from Bio.PDB import PDBParser
 
+#compute the center of mass
+
+# create a PDBParser object
+parser = PDBParser()
+# create a structure object from a PDB file
+structure = parser.get_structure('name', '1uaz.pdb')
+com = structure.center_of_mass()
+#print(com)
 
 def fibonacci_sphere(samples=1):
 
@@ -15,6 +24,8 @@ def fibonacci_sphere(samples=1):
         x = math.cos(theta) * radius
         z = math.sin(theta) * radius
 
-        points.append((x, y, z))
+        points.append((com[0]+x, com[1]+y, com[2]+z))
 
     return points
+
+fibonacci_sphere(10000)
