@@ -31,7 +31,7 @@ def project2vector(vector, point, center):
     position of point as a ratio of distance relative to the center of mass
 
     input:
-    - vector (normal vector calculated by fibonacci_sphere)
+    - vector: normal vector calculated by fibonacci_sphere
     - point: Coordinates of Calpha residue
     - center: Coordinates of the coordinates origin (center fo mass) 
             because we translate the spatial coordinate system so that 
@@ -46,6 +46,26 @@ def project2vector(vector, point, center):
     point_vector = point - center
 
     return (np.dot(normal_vector, point_vector)/np.dot(normal_vector, normal_vector))
+
+def cfunction(df, vector, center):
+    '''
+    calculate the projection of all the Calpha and return a list of the relative position 
+    of all the Calpha
+
+    input:
+    - vector: a normal vector calculated by fibonacci_sphere
+    - df: df containing the coordinates of the Calpha
+    - center: Coordinates of the coordinates origin (center fo mass) 
+            because we translate the spatial coordinate system so that 
+            the  centre of mass becomes the origin of the coordinates
+    '''
+    position = list()
+    for index, row in df.iterrows():
+        point = np.array([row['x_coord'], row['y_coord'], row['z_coord']])
+        position.append(project2vector(vector, point, center))
+    print(position)
+
+    
 
 
 
