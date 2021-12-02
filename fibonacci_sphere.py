@@ -1,17 +1,14 @@
 import math
-from Bio.PDB import PDBParser
+import numpy as np
 
-#compute the center of mass
+def fibonacci_sphere(com, samples=1):
+    '''
+    evenly distribute points on a sphere and return all the points in a list
 
-# create a PDBParser object
-parser = PDBParser()
-# create a structure object from a PDB file
-structure = parser.get_structure('name', '1uaz.pdb')
-com = structure.center_of_mass()
-#print(com)
-
-def fibonacci_sphere(samples=1):
-
+    input:
+    - com: center of mass
+    - samples: number of points to generate (default=1)
+    '''
     points = []
     phi = math.pi * (3. - math.sqrt(5.))  # golden angle in radians
 
@@ -28,4 +25,32 @@ def fibonacci_sphere(samples=1):
 
     return points
 
-fibonacci_sphere(10000)
+def project2vector(vector, point, center):
+    '''
+    project a point to a vector in a 3D space and return the reletive
+    position of point as a ratio of distance relative to the center of mass
+
+    input:
+    - vector (normal vector calculated by fibonacci_sphere)
+    - point: Coordinates of Calpha residue
+    - center: Coordinates of the coordinates origin (center fo mass) 
+            because we translate the spatial coordinate system so that 
+            the  centre of mass becomes the origin of the coordinates
+    '''
+    # convert into numpy array
+    vector = np.array(vector)
+    point = np.array(point)
+    center = np.array(center)
+
+    normal_vector = vector - center
+    point_vector = point - center
+
+    return (np.dot(normal_vector, point_vector)/np.dot(normal_vector, normal_vector))
+
+
+
+
+
+
+
+
