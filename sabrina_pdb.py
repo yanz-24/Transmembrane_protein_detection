@@ -69,16 +69,24 @@ points_com = fibonacci_sphere(10000) #valeur qui pourra etre changée par l'util
 #ACC sum of hydrophobic and hydrophilic res
 
 #create separate df for hydrophobic and hydrophilic residues
-hydrophobic =  ['PHE', 'GLY', 'ILE', 'LEU', 'MET', 'TRP', 'VAL', 'TYR']
+hydrophobic = ['PHE', 'GLY', 'ILE', 'LEU', 'MET', 'TRP', 'VAL', 'TYR']
 hydrophilic = ['ALA', 'CYS', 'ASP', 'GLU', 'HIS', 'LYS', 'ASN', 'PRO', 'GLN', 'ARG', 'SER', 'THR']
 
-df_hydrophobic = df_pdb_CA[df_pdb_CA['residue_name'].isin(hydrophobic)]
-df_hydrophilic = df_pdb_CA[df_pdb_CA['residue_name'].isin(hydrophilic)]
+'''
+The hydrophobic factor of the objective func-tion is
+the relative hydrophobic membrane-exposedsurface area
+(hydrophobic area divided by all surface area).
+'''
 
-#sum each acc aside
+def hydrophobic_factor(df, res_hydropho, res_hydrophi ):
 
-sum_acc_hydrophobic = sum(df_hydrophobic['acc'])
-sum_acc_hydrophilic = sum(df_hydrophilic['acc'])
+    df_hydrophobic = df[df['residue_name'].isin(res_hydropho)]
+    df_hydrophilic = df[df['residue_name'].isin(res_hydrophi)]
+    sum_acc_hydrophobic = sum(df_hydrophobic['acc'])
+    sum_acc_hydrophilic = sum(df_hydrophilic['acc'])
+    factor = sum_acc_hydrophobic / (sum_acc_hydrophilic + sum_acc_hydrophobic)
 
-#The hydrophobic factor of the objective func-tion is defined as the relative hydrophobic membrane-exposedsurface area
-# (hydrophobic area divided by all surface area).
+    return factor
+
+#example
+#print(hydrophobic_factor(df_pdb_CA, hydrophobic, hydrophilic))
