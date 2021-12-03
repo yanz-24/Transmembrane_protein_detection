@@ -3,9 +3,65 @@ from biopandas.pdb import PandasPdb
 from Bio.PDB import PDBParser
 from Bio.PDB.DSSP import DSSP
 import math
-#add channels ( conda forge )
-#generates an even sphere distribution of points around the center of mass
-def fibonacci_sphere(samples=1):
+
+
+'''
+keeping CA atoms and computing ACC
+returns a df 
+'''
+
+def prepare_pdb( pdb_file, pdb_id ) :
+
+    # Initialize a PandasPdb object + fetch PDB file
+    ppdb = PandasPdb().fetch_pdb(pdb_id)
+    df_pdb = ppdb.df['ATOM']
+
+    # Save DSSP in dataframe
+    p = PDBParser()
+    structure = p.get_structure(pdb_id, pdb_file)
+
+    model = structure[0]
+    dssp = DSSP(model, pdb_file, dssp='mkdssp')
+
+    # keep ACC and residue number
+    df_dssp = pd.DataFrame(data=dssp)
+    df_dssp_acc = df_dssp.iloc[:,[0,3]]
+
+    # merge pdb and dssp
+    df_dssp_acc.iloc[:,0]= df_dssp_acc.iloc[:,0].astype(int)
+    df_pdb['residue_number']= df_pdb['residue_number'].astype(int)
+    df_pdb_acc = df_dssp_acc.merge(right=df_pdb, how='left', left_on=0, right_on='residue_number')
+
+    # remove all the atoms with ACC < 0
+    df_pdb_acc_clean = df_pdb_acc[df_pdb_acc[3] > 0]
+
+    # select Ca from pdb
+    df_pdb_CA = df_pdb_acc_clean[df_pdb_acc_clean['atom_name'] == 'CA']
+    df_pdb_CA = df_pdb_CA.rename(columns={3: 'acc'})
+
+    return df_pdb_CA
+
+
+'''
+Compute center of mass
+'''
+
+def mass_center(pdb_file) :
+    # create a PDBParser object
+    parser = PDBParser()
+    # create a structure object from a PDB file
+    structure = parser.get_structure('name', pdb_file)
+    com = structure.center_of_mass()
+
+    return com
+
+
+'''
+generating an even sphere distribution of points 
+around the center of mass
+'''
+
+def fibonacci_sphere(com, samples=1):
 
     points = []
     phi = math.pi * (3. - math.sqrt(5.))  # golden angle in radians
@@ -23,57 +79,9 @@ def fibonacci_sphere(samples=1):
 
     return points
 
-# Initialize a PandasPdb object + fetch PDB file
-# NB :add a user input to chose the file
-#mettre la fonction dans le main
-#tout passer dans une fonction et mettre un if == name
-#utiliser argparse pour ajouter des arguments
-ppdb = PandasPdb().fetch_pdb('1uaz')
-df_pdb = ppdb.df['ATOM']
-
-# Save DSSP in dataframe
-p = PDBParser()
-structure = p.get_structure("1UAZ", "1uaz.pdb")
-model = structure[0]
-dssp = DSSP(model, "1uaz.pdb", dssp='mkdssp')
-
-# keep ACC and residue number
-df_dssp = pd.DataFrame(data=dssp)
-df_dssp_acc = df_dssp.iloc[:,[0,3]]
-
-# merge pdb and dssp
-df_dssp_acc.iloc[:,0]= df_dssp_acc.iloc[:,0].astype(int)
-df_pdb['residue_number']= df_pdb['residue_number'].astype(int)
-df_pdb_acc = df_dssp_acc.merge(right=df_pdb, how='left', left_on=0, right_on='residue_number')
-
-# remove all the atoms with ACC < 0
-# df_pdb_acc[3]= df_pdb_acc[3].astype(int)
-df_pdb_acc_clean = df_pdb_acc[df_pdb_acc[3] > 0]
-
-# select Ca from pdb
-df_pdb_CA = df_pdb_acc_clean[df_pdb_acc_clean['atom_name'] == 'CA']
-df_pdb_CA = df_pdb_CA.rename(columns={3: 'acc'})
-
-#compute the center of mass
-
-# create a PDBParser object
-parser = PDBParser()
-# create a structure object from a PDB file
-structure = parser.get_structure('name', '1uaz.pdb')
-com = structure.center_of_mass()
-
-#Determination of the lines passing through thecenter of mass
-
-points_com = fibonacci_sphere(10000) #valeur qui pourra etre changée par l'utilisateur
-
-#ACC sum of hydrophobic and hydrophilic res
-
-#create separate df for hydrophobic and hydrophilic residues
-hydrophobic = ['PHE', 'GLY', 'ILE', 'LEU', 'MET', 'TRP', 'VAL', 'TYR']
-hydrophilic = ['ALA', 'CYS', 'ASP', 'GLU', 'HIS', 'LYS', 'ASN', 'PRO', 'GLN', 'ARG', 'SER', 'THR']
 
 '''
-The hydrophobic factor of the objective func-tion is
+The hydrophobic factor of the objective function is
 the relative hydrophobic membrane-exposedsurface area
 (hydrophobic area divided by all surface area).
 '''
@@ -88,5 +96,16 @@ def hydrophobic_factor(df, res_hydropho, res_hydrophi ):
 
     return factor
 
-#example
-#print(hydrophobic_factor(df_pdb_CA, hydrophobic, hydrophilic))
+
+
+
+#Determination of the lines passing through thecenter of mass
+#points_com = fibonacci_sphere(10000)
+
+
+
+
+
+
+
+
