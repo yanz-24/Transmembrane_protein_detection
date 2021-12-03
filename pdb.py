@@ -2,26 +2,8 @@ import pandas as pd
 from biopandas.pdb import PandasPdb
 from Bio.PDB import PDBParser
 from Bio.PDB.DSSP import DSSP
-import math
-
-#generates an even sphere distribution of points around the center of mass
-def fibonacci_sphere(samples=1):
-
-    points = []
-    phi = math.pi * (3. - math.sqrt(5.))  # golden angle in radians
-
-    for i in range(samples):
-        y = 1 - (i / float(samples - 1)) * 2  # y goes from 1 to -1
-        radius = math.sqrt(1 - y * y)  # radius at y
-
-        theta = phi * i  # golden angle increment
-
-        x = math.cos(theta) * radius
-        z = math.sin(theta) * radius
-
-        points.append((com[0]+x, com[1]+y, com[2]+z))
-
-    return points
+import numpy as np
+import fibonacci_sphere as fibo
 
 # Initialize a PandasPdb object + fetch PDB file
 # NB :add a user input to chose the file
@@ -58,6 +40,12 @@ parser = PDBParser()
 structure = parser.get_structure('name', '1uaz.pdb')
 com = structure.center_of_mass()
 
-#Determination of the lines passing through thecenter of mass
+# Determination of the lines passing through the center of mass
 
-points_com = fibonacci_sphere(10000)
+points_fibo = fibo.fibonacci_sphere(com, 10000)
+# print(points_fibo)
+
+# project all the Calpha to a normal vector
+# print(com)
+
+fibo.cfunction(df_pdb_CA, points_fibo[1], com)
