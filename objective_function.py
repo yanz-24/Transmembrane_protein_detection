@@ -65,7 +65,7 @@ def straightness_factor(df_slice):
     the relative frequency of ‘straight’ residues in a given protein slice."
 
     input:
-    - df: pdb dataframe of Calpha 
+    - df_slice: pdb dataframe of Calpha 
     '''
     # number of straight residues (column 'straight' is True)
     number_straight = df_slice['straight'].values.sum()
