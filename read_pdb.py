@@ -59,8 +59,7 @@ def prepare_pdb(pdb_file=False, pdb_id=False) :
 
     # select Ca from pdb
     df_pdb_CA = df_pdb_acc_clean[df_pdb_acc_clean['atom_name'] == 'CA']
-    df_pdb_CA = df_pdb_CA.rename(columns={3: 'acc'})
+    df_pdb_CA = df_pdb_CA.rename(columns={3: 'acc'}).reset_index(drop=True)
 
     return df_pdb_CA
     
-print(prepare_pdb())
