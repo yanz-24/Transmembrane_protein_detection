@@ -1,5 +1,15 @@
 import math
 import numpy as np
+from Bio.PDB import PDBParser
+
+def mass_center(pdb_file) :
+    # create a PDBParser object
+    parser = PDBParser()
+    # create a structure object from a PDB file
+    structure = parser.get_structure('name', pdb_file)
+    com = structure.center_of_mass()
+
+    return com
 
 def fibonacci_sphere(com, samples=1):
     '''
@@ -25,7 +35,7 @@ def fibonacci_sphere(com, samples=1):
 
     return points
 
-def project2vector(vector, point, center):
+def point2vector(vector, point, center):
     '''
     project a point to a vector in a 3D space and return the reletive
     position of point as a ratio of distance relative to the center of mass
@@ -47,23 +57,28 @@ def project2vector(vector, point, center):
 
     return (np.dot(normal_vector, point_vector)/np.dot(normal_vector, normal_vector))
 
-def cfunction(df, vector, center):
+
+def slicing(df, vector, center):
     '''
-    calculate the projection of all the Calpha and return a list of the relative position 
-    of all the Calpha
+    cut the protein into 1 Å wide slices along a normal vector
+    and add slice number to dataframe
 
     input:
+    - df: pdb dataframe of Calpha
     - vector: a normal vector calculated by fibonacci_sphere
-    - df: df containing the coordinates of the Calpha
     - center: Coordinates of the coordinates origin (center fo mass) 
             because we translate the spatial coordinate system so that 
             the  centre of mass becomes the origin of the coordinates
     '''
-    position = list()
     for index, row in df.iterrows():
         point = np.array([row['x_coord'], row['y_coord'], row['z_coord']])
-        position.append(project2vector(vector, point, center))
-    print(position)
+        projection = point2vector(vector, point, center)
+        df.loc[index, ["projection"]] = projection
+        df.loc[index, ["slice"]] = int(math.floor(projection))
+
+    return(df)
+
+
 
     
 
