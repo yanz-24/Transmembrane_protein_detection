@@ -20,7 +20,6 @@ def hydrophobic_factor(df):
 
     return factor
 
-
 def monotonic(x):
     '''
     check list monotonicity and return a boolean value
@@ -87,4 +86,4 @@ def end_chain(df_slice):
     '''
     # 1 - freq(ter res in slice )
 
-print()
+
