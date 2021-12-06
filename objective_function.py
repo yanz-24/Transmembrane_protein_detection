@@ -20,8 +20,6 @@ def hydrophobic_factor(df):
 
     return factor
 
-#example
-#print(hydrophobic_factor(df_pdb_CA, hydrophobic, hydrophilic))
 
 def monotonic(x):
     '''
@@ -72,3 +70,21 @@ def straightness_factor(df_slice):
     return(number_straight/len(df_slice))
 
 
+def turn_factor(df_slice):
+    '''
+    The turn factor is defined as one minus the relative frequency of ‘turn’ residues in a given slice.
+    Turn triplets have a similar definition as the straight triplets: the i-th residue in a protein
+    chain is the center of a turn if the projection of the Cα atoms of the previous third (i − 3) residue,
+    itself (i) and the next third (i + 3) residue onto the predefined vector
+    are not in a  monotone decreasing or increasing order.
+    '''
+
+
+def end_chain(df_slice):
+    '''
+    The end-chain factor is one minus the relative frequency of
+    chain end residues in a given slice
+    '''
+    # 1 - freq(ter res in slice )
+
+print()

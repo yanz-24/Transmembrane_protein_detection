@@ -5,11 +5,7 @@ from pathlib import Path
 import os
 
 from biopandas.pdb import PandasPdb
-from Bio.PDB import PDBParser
-from Bio.PDB import PDBList 
-from Bio.PDB.DSSP import DSSP
-
-
+from Bio.PDB import PDBList
 import read_pdb as pdb
 import fibonacci_sphere as fibo
 import objective_function as obj
@@ -20,7 +16,6 @@ parser.add_argument("-i", default=False, help="input file (.pdb)")
 parser.add_argument("-id", default=False, help="pdb code")
 parser.add_argument("-pt", default=1000, help="number of points in fibonnaci sphere <int> (default=1000)")
 args = parser.parse_args()
-#use example :  python3 main.py -i 1uaz.pdb -id 1UAZ
 
 # show every row
 pd.set_option('display.max_columns', None)
@@ -71,7 +66,7 @@ if __name__ == "__main__":
 
             # calculate the straightness factor
             straightness_factor = obj.straightness_factor(group)
-            print(straightness_factor)
+            #print(straightness_factor)
         
         
 

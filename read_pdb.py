@@ -1,10 +1,6 @@
 import pandas as pd
-from biopandas.pdb import PandasPdb
 from Bio.PDB import PDBParser
-from Bio.PDB import PDBList 
 from Bio.PDB.DSSP import DSSP
-import math
-from pathlib import Path
 
 
 def prepare_pdb(ppdb, pdb_file=False) :
