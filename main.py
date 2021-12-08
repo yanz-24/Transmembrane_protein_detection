@@ -49,6 +49,7 @@ if __name__ == "__main__":
     fibo_sphere = fibo.fibonacci_sphere(com, args.pt)
 
     # iterate on normal vector and calculate Q-value
+    list_qvalue_vector = list()
     for vector in fibo_sphere:
         # add the slice number of each residue
         df_current_vector = fibo.slicing(df, vector, com)
@@ -58,14 +59,17 @@ if __name__ == "__main__":
         # calculate the Q-value of each slice
 
         df_grouped = df_current_vector.groupby(['slice'])
+        list_qvalue_1a = list()
         for name, group in df_grouped:
-            # calculate the hydrophobic factor
-            hydrophobic_factor = obj.hydrophobic_factor(group)
-            #print(hydrophobic_factor)
+            qvalue_1a = obj.calculate_Qvalue(group)
+            list_qvalue_1a.append(qvalue_1a)
+        
+        list_qvalue_22a = list()
+        for i in range(len(list_qvalue_1a)-22):
+            qvalue_22a = sum(list_qvalue_1a[i:(i+22)])
+            list_qvalue_22a.append(qvalue_22a)
+        list_qvalue_vector.append(max(list_qvalue_22a))
 
-            # calculate the straightness factor
-            straightness_factor = obj.straightness_factor(group)
-            print(straightness_factor)
         
 
 #print(pdb.prepare_pdb(ppdb))
