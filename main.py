@@ -1,6 +1,5 @@
 import argparse
 import pandas as pd
-import math
 from pathlib import Path
 import os
 
@@ -14,7 +13,7 @@ import objective_function as obj
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", default=False, help="input file (.pdb)")
 parser.add_argument("-id", default=False, help="pdb code")
-parser.add_argument("-pt", default=1000, help="number of points in fibonnaci sphere <int> (default=1000)")
+parser.add_argument("-pt", default=10, type=int, help="number of points in fibonnaci sphere <int> (default=10)")
 args = parser.parse_args()
 
 # show every row
@@ -45,7 +44,7 @@ if __name__ == "__main__":
     else: # no input: Program termination
         print("No available pdb id or pdb file found.")
         os._exit()
-    
+
     # fibo distribution
     fibo_sphere = fibo.fibonacci_sphere(com, args.pt)
 
@@ -66,8 +65,10 @@ if __name__ == "__main__":
 
             # calculate the straightness factor
             straightness_factor = obj.straightness_factor(group)
-            #print(straightness_factor)
-        
+            print(straightness_factor)
         
 
+#print(pdb.prepare_pdb(ppdb))
 
+#prendre le lineplot des carbon alpha en output
+#renvoyer la prot aligner sur z en changant le beta factor de la partie dans et a l'ext et colorer en 2 couleurs

@@ -33,3 +33,4 @@ def prepare_pdb(ppdb, pdb_file=False) :
 
     return df_pdb_CA
     
+#package free sassa pour la relative acc

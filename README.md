@@ -13,8 +13,11 @@ package as well as argparse module.
 Conda is needed in order to set up the environment
 for conda installation please check the user manual [https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)
 Then run the following commands : \
-$ **conda env create -f TMDET.yml** \
-$ **conda activate TMDET** \
+
+```
+$ conda env create -f TMDET.yml 
+$ conda activate TMDET
+```
 
 Usage
 -----------------------------------------------------------------------------

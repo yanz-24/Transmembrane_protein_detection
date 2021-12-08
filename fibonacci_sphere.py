@@ -37,7 +37,7 @@ def fibonacci_sphere(com, samples=1):
 
 def point2vector(vector, point, center):
     '''
-    project a point to a vector in a 3D space and return the reletive
+    project a point to a vector in a 3D space and return the relative
     position of point as a ratio of distance relative to the center of mass
 
     input:
