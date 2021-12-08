@@ -91,3 +91,7 @@ def end_chain(df_slice):
     """
     # 1 - freq(ter res in slice )
 '''
+
+def calculate_Qvalue(df_slice):
+    qvalue = hydrophobic_factor(df_slice) * straightness_factor(df_slice) * turn_factor(df_slice)
+    return qvalue
