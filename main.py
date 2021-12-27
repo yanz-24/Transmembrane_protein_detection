@@ -49,26 +49,27 @@ if __name__ == "__main__":
     fibo_sphere = fibo.fibonacci_sphere(com, args.pt)
 
     # iterate on normal vector and calculate Q-value
-    list_qvalue_vector = list()
+    best_vector = fibo_sphere[0]
+    best_Qvalue = 0
     for vector in fibo_sphere:
         # add the slice number of each residue
         df_current_vector = fibo.slicing(df, vector, com)
         # check if the residues are straight
         obj.add_is_straight(df_current_vector).to_csv('test.csv')
         
-        # calculate the Q-value of each slice
-
+        # calculate the Q-value of each slice of a vector
         df_grouped = df_current_vector.groupby(['slice'])
-        list_qvalue_1a = list()
+        list_qvalue_1a = list() # list of Q-value of each slice 
         for name, group in df_grouped:
             qvalue_1a = obj.calculate_Qvalue(group)
             list_qvalue_1a.append(qvalue_1a)
         
-        list_qvalue_22a = list()
+        # calculate the Q-value of a 22A window of a vector
         for i in range(len(list_qvalue_1a)-22):
             qvalue_22a = sum(list_qvalue_1a[i:(i+22)])
-            list_qvalue_22a.append(qvalue_22a)
-        list_qvalue_vector.append(max(list_qvalue_22a))
+            if qvalue_22a > best_Qvalue: # if find a better Qvalue
+                best_Qvalue = qvalue_22a
+                best_vector = vector
 
         
 
