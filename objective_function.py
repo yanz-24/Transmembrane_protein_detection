@@ -64,7 +64,7 @@ def straightness_factor(df_slice):
     the relative frequency of ‘straight’ residues in a given protein slice."
 
     input:
-    - df_slice: pdb dataframe of Calpha 
+    - df_slice: pdb dataframe of Calpha with slice column (result returned by add_is_straight)
     '''
     # number of straight residues (column 'straight' is True)
     number_straight = df_slice['straight'].values.sum()
@@ -78,6 +78,9 @@ def turn_factor(df_slice):
     chain is the center of a turn if the projection of the Cα atoms of the previous third (i − 3) residue,
     itself (i) and the next third (i + 3) residue onto the predefined vector
     are not in a  monotone decreasing or increasing order.
+    
+    - df_slice: pdb dataframe of Calpha with slice column (result returned by add_is_straight)
+
     """
 
     number_turn = (~df_slice['straight'].values.sum())
@@ -93,5 +96,10 @@ def end_chain(df_slice):
 '''
 
 def calculate_Qvalue(df_slice):
+    """
+    calculate the Q-value of a PDB dataframe 
+    - df_slice: pdb dataframe of Calpha with slice column (result returned by add_is_straight)
+
+    """
     qvalue = hydrophobic_factor(df_slice) * straightness_factor(df_slice) * turn_factor(df_slice)
     return qvalue
