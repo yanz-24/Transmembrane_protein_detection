@@ -23,7 +23,7 @@ pd.set_option('display.max_rows', None)
 
 if __name__ == "__main__":
     # get calpha of pdb in dataframe and calculate the com
-    if args.id != False: # if user provide pdb id (preferred)
+    if args.id: # if user provide pdb id (preferred)
         ppdb = PandasPdb().fetch_pdb(args.id)
 
         pdbl = PDBList()
@@ -36,7 +36,7 @@ if __name__ == "__main__":
         com = fibo.mass_center(pdb_file)
         os.remove(pdb_file)
 
-    elif args.i != False: # if user provide input file
+    elif args.i: # if user provide input file
         ppdb = PandasPdb().read_pdb(args.i)
         df = pdb.prepare_pdb(ppdb, args.i)
         com = fibo.mass_center(args.i)
@@ -74,6 +74,8 @@ if __name__ == "__main__":
         
 
 #print(pdb.prepare_pdb(ppdb))
+
+# view molecule
 
 #prendre le lineplot des carbon alpha en output
 #renvoyer la prot aligner sur z en changant le beta factor de la partie dans et a l'ext et colorer en 2 couleurs
