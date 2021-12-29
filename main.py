@@ -4,7 +4,6 @@ import pandas as pd
 from pathlib import Path
 import os
 import numpy as np
-from pandas.core.algorithms import value_counts
 
 from biopandas.pdb import PandasPdb
 from Bio.PDB import PDBList
