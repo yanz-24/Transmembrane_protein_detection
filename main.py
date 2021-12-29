@@ -2,12 +2,15 @@ import argparse
 import pandas as pd
 from pathlib import Path
 import os
+import numpy as np
 
 from biopandas.pdb import PandasPdb
 from Bio.PDB import PDBList
+
 import read_pdb as pdb
 import fibonacci_sphere as fibo
 import objective_function as obj
+import coordinates_transformation as trans
 
 
 parser = argparse.ArgumentParser()
@@ -48,34 +51,51 @@ if __name__ == "__main__":
     # fibo distribution
     fibo_sphere = fibo.fibonacci_sphere(com, args.pt)
 
-    # iterate on normal vector and calculate Q-value
-    best_vector = fibo_sphere[0]
-    best_Qvalue = 0
-    for vector in fibo_sphere:
-        # add the slice number of each residue
-        df_current_vector = fibo.slicing(df, vector, com)
-        # check if the residues are straight
-        obj.add_is_straight(df_current_vector).to_csv('test.csv')
-        
-        # calculate the Q-value of each slice of a vector
-        df_grouped = df_current_vector.groupby(['slice'])
-        list_qvalue_1a = list() # list of Q-value of each slice 
-        for name, group in df_grouped:
-            qvalue_1a = obj.calculate_Qvalue(group)
-            list_qvalue_1a.append(qvalue_1a)
-        
-        # calculate the Q-value of a 22A window of a vector
-        for i in range(len(list_qvalue_1a)-22):
-            qvalue_22a = sum(list_qvalue_1a[i:(i+22)])
-            if qvalue_22a > best_Qvalue: # if find a better Qvalue
-                best_Qvalue = qvalue_22a
-                best_vector = vector
+    best_Qvalue, best_vector = obj.get_best_vector(df, com, fibo_sphere)
+    
+    # Classification of protein
+    '''
+    1. Q-value < lower limit: globular protein
+    2. lower limit < Q-value < upper limit (Swissprot): the globular fragment 
+        of a transmembrane protein (rare case, should be checked manually)
+    3. upper limit < Q-value: transmembrane protein (alpha, beta, coil according to the DSSP algorithm)
+    
+    use the threshold in article? test 10+ pdb and decide arbitrarily? 
+    Can we ignore case 2 to make a binary classification?
+    
 
-        
+    # threshold in article (Fig. 1.)
+    lower_limit = 40
+    upper_limit = 50
 
-#print(pdb.prepare_pdb(ppdb))
+    if best_Qvalue > upper_limit:
+        print("transmembrane protein")
+    else:
+        print("globular protein")
+        os._exit(1)
+    '''
 
-# view molecule
+    # Membrane positioning
+    '''
+    method defined in https://doi.org/10.1093/protein/gzv063 
 
-#prendre le lineplot des carbon alpha en output
-#renvoyer la prot aligner sur z en changant le beta factor de la partie dans et a l'ext et colorer en 2 couleurs
+    two variables to be taken into consideration:
+    1. iterate on membrane thickness (th) from 2.5 nm to 10 nm
+    2. iterate on membrane center (Cmb) from -5 nm to 5 nm around COM
+    condition: at least one atom between membrane
+
+    step 1: Transform the coordinates so that the COM becomes the origin (translate)
+            and the normal vector becomes the Z-axis (rotate).
+    step 2: iterate on th and Cmb (complexity: ~7500)
+    step 3: calculate C in each loop 
+            (determine whether atom out of mb by z coordinate)
+    step 4: draw two plots: a) C vs th; b) C vs Cmb
+    '''
+    
+    z_axis = np.array([0, 0, 1])
+
+    rotation_matrix = trans.get_rotation_matrix(vec1=best_vector, vec2=z_axis)
+
+    print(best_vector, com)
+
+    # view molecule
