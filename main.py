@@ -1,8 +1,10 @@
 import argparse
+from numpy.core.defchararray import lower
 import pandas as pd
 from pathlib import Path
 import os
 import numpy as np
+from pandas.core.algorithms import value_counts
 
 from biopandas.pdb import PandasPdb
 from Bio.PDB import PDBList
@@ -16,6 +18,7 @@ import coordinates_transformation as trans
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", default=False, help="input file (.pdb)")
 parser.add_argument("-id", default=False, help="pdb code")
+parser.add_argument("-o", default='./output.pdb', help="output file (.pdb)")
 parser.add_argument("-pt", default=10, type=int, help="number of points in fibonnaci sphere <int> (default=10)")
 args = parser.parse_args()
 
@@ -51,6 +54,7 @@ if __name__ == "__main__":
     # fibo distribution
     fibo_sphere = fibo.fibonacci_sphere(com, args.pt)
 
+    # determine the best normal vector of membrane
     best_Qvalue, best_vector = obj.get_best_vector(df, com, fibo_sphere)
     
     # Classification of protein
@@ -80,22 +84,72 @@ if __name__ == "__main__":
     method defined in https://doi.org/10.1093/protein/gzv063 
 
     two variables to be taken into consideration:
-    1. iterate on membrane thickness (th) from 2.5 nm to 10 nm
-    2. iterate on membrane center (Cmb) from -5 nm to 5 nm around COM
+    1. iterate on membrane thickness (tk) from 2.5 nm to 10 nm
+    2. iterate on membrane center (cmb) from -5 nm to 5 nm around COM
     condition: at least one atom between membrane
-
-    step 1: Transform the coordinates so that the COM becomes the origin (translate)
-            and the normal vector becomes the Z-axis (rotate).
-    step 2: iterate on th and Cmb (complexity: ~7500)
-    step 3: calculate C in each loop 
-            (determine whether atom out of mb by z coordinate)
-    step 4: draw two plots: a) C vs th; b) C vs Cmb
     '''
-    
+    # step 1: Transform the coordinates so that the COM becomes the origin (translate)
+    df = trans.translate_df(df, com)
+    # df.drop(df.columns[-3:], axis=1, inplace=True) # Remove the last three columns 
+    # step 1: and the normal vector becomes the Z-axis (rotate).
     z_axis = np.array([0, 0, 1])
-
     rotation_matrix = trans.get_rotation_matrix(vec1=best_vector, vec2=z_axis)
+    df = trans.rotate_df(df, rotation_matrix)
 
-    print(best_vector, com)
+    # step 2: iterate on tk and cmb (complexity: ~7500)
+    M_residue = ['PHE', 'MET', 'GLY', 'ILE', 'LEU', 'TRP', 'VAL', 'CYS', 'SER', 'ALA', 'HIS']
+    S_residue = ['ASP', 'GLU', 'LYS', 'ASN', 'PRO', 'GLN', 'ARG', 'THR', 'TYR']
+    for tk in range(25, 100):
+        for cmb in range(-50, 50):
+            upper_mb = cmb + tk/2
+            lower_mb = cmb - tk/2
 
-    # view molecule
+            # jump if mb does not include protein at all
+            if df['z_coord'].min() > upper_mb or df['z_coord'].max() < upper_mb:
+                continue
+            else:
+                ei = pd.cut(df['z_coord'], bins = [lower_mb-100, lower_mb, upper_mb, upper_mb+100], 
+                    labels = ["e", "i", "e"], ordered=False)
+
+                if_M = df['residue_name'].apply(lambda x: any([k in x for k in M_residue]))
+                df_MSie  = pd.concat([ei.reset_index(drop=True), if_M.reset_index(drop=True)], axis=1)
+
+                Me = df_MSie.value_counts()[0]
+                Se = df_MSie.value_counts()[1]
+                Mi = df_MSie.value_counts()[2]
+                Si = df_MSie.value_counts()[3]
+                
+                # step 3: calculate C in each loop (determine whether atom out of mb by z coordinate)
+                C_value = (Mi*Se - Si*Me)/((Mi+Si)*(Mi+Me)*(Si+Se)*(Se+Me))**0.5
+
+    # step 4: draw two plots: a) C vs th; b) C vs Cmb
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    '''
+    for col in df.columns:
+        print(col)
+
+    print('-------------------------------')
+    for col in ppdb.df.columns:
+        print(col)
+    
+    # output: pdb file
+    ppdb._df = df
+    ppdb.to_pdb(path=args.o, 
+            records=None, 
+            gz=False, 
+            append_newline=True)
+    '''
