@@ -104,20 +104,21 @@ if __name__ == "__main__":
             upper_mb = cmb + tk/2
             lower_mb = cmb - tk/2
 
-            # jump if mb does not include protein at all
             if df['z_coord'].min() > upper_mb or df['z_coord'].max() < upper_mb:
-                continue
+                continue # jump if mb does not include protein at all
+
             else:
+                # inside (i) or outside (e) mb:
                 ei = pd.cut(df['z_coord'], bins = [lower_mb-100, lower_mb, upper_mb, upper_mb+100], 
                     labels = ["e", "i", "e"], ordered=False)
-
+                # if residue is M (bool):
                 if_M = df['residue_name'].apply(lambda x: any([k in x for k in M_residue]))
+                # cbind ei and if_M
                 df_MSie  = pd.concat([ei.reset_index(drop=True), if_M.reset_index(drop=True)], axis=1)
 
-                Me = df_MSie.value_counts()[0]
-                Se = df_MSie.value_counts()[1]
-                Mi = df_MSie.value_counts()[2]
-                Si = df_MSie.value_counts()[3]
+                # count occurrences
+                count_tab = df_MSie.value_counts()
+                Me, Se, Mi, Si = count_tab[0], count_tab[1], count_tab[2], count_tab[3]
                 
                 # step 3: calculate C in each loop (determine whether atom out of mb by z coordinate)
                 C_value = (Mi*Se - Si*Me)/((Mi+Si)*(Mi+Me)*(Si+Se)*(Se+Me))**0.5
