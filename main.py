@@ -4,6 +4,7 @@ import pandas as pd
 from pathlib import Path
 import os
 import numpy as np
+# import matplotlib.pyplot as plt
 
 from biopandas.pdb import PandasPdb
 from Bio.PDB import PDBList
@@ -27,6 +28,7 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
 if __name__ == "__main__":
+
     # get calpha of pdb in dataframe and calculate the com
     if args.id: # if user provide pdb id (preferred)
         ppdb = PandasPdb().fetch_pdb(args.id)
@@ -48,7 +50,7 @@ if __name__ == "__main__":
 
     else: # no input: Program termination
         print("No available pdb id or pdb file found.")
-        os._exit()
+        os._exit(0)
 
     # fibo distribution
     fibo_sphere = fibo.fibonacci_sphere(com, args.pt)
@@ -98,6 +100,8 @@ if __name__ == "__main__":
     # step 2: iterate on tk and cmb (complexity: ~7500)
     M_residue = ['PHE', 'MET', 'GLY', 'ILE', 'LEU', 'TRP', 'VAL', 'CYS', 'SER', 'ALA', 'HIS']
     S_residue = ['ASP', 'GLU', 'LYS', 'ASN', 'PRO', 'GLN', 'ARG', 'THR', 'TYR']
+    
+    best_C = 0
     for tk in range(25, 100):
         for cmb in range(-50, 50):
             upper_mb = cmb + tk/2
@@ -116,13 +120,24 @@ if __name__ == "__main__":
                 df_MSie  = pd.concat([ei.reset_index(drop=True), if_M.reset_index(drop=True)], axis=1)
 
                 # count occurrences
-                count_tab = df_MSie.value_counts()
-                Me, Se, Mi, Si = count_tab[0], count_tab[1], count_tab[2], count_tab[3]
-                
+                df_confusion = pd.crosstab(ei.reset_index(drop=True), if_M.reset_index(drop=True))
+                Me = df_confusion.loc['e', True]
+                Se = df_confusion.loc['e', False]
+                Mi = df_confusion.loc['i', True]
+                Si = df_confusion.loc['i', False]
+               
                 # step 3: calculate C in each loop (determine whether atom out of mb by z coordinate)
                 C_value = (Mi*Se - Si*Me)/((Mi+Si)*(Mi+Me)*(Si+Se)*(Se+Me))**0.5
 
-    # step 4: draw two plots: a) C vs th; b) C vs Cmb
+                if C_value > best_C: # if find a higher C
+                    best_C = C_value
+                    best_tk = tk
+                    best_cmb = cmb
+    
+    print(best_Qvalue)
+                
+        
+ 
 
 
 
