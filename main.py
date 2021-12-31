@@ -13,12 +13,12 @@ import read_pdb as pdb
 import fibonacci_sphere as fibo
 import objective_function as obj
 import coordinates_transformation as trans
-
+import draw_mb 
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", default=False, help="input file (.pdb)")
 parser.add_argument("-id", default=False, help="pdb code")
-parser.add_argument("-o", default='./output.pdb', help="output file (.pdb)")
+parser.add_argument("-o", help="output file (.pdb)")
 parser.add_argument("-pt", default=10, type=int, help="number of points in fibonnaci sphere <int> (default=10)")
 args = parser.parse_args()
 
@@ -57,7 +57,8 @@ if __name__ == "__main__":
 
     # determine the best normal vector of membrane
     best_Qvalue, best_vector = obj.get_best_vector(df, com, fibo_sphere)
-    
+    print(best_Qvalue)
+
     # Classification of protein
     '''
     1. Q-value < lower limit: globular protein
@@ -65,20 +66,19 @@ if __name__ == "__main__":
         of a transmembrane protein (rare case, should be checked manually)
     3. upper limit < Q-value: transmembrane protein (alpha, beta, coil according to the DSSP algorithm)
     
-    use the threshold in article? test 10+ pdb and decide arbitrarily? 
-    Can we ignore case 2 to make a binary classification?
-    
+    ignore case 2 to make a binary classification
+    '''
 
     # threshold in article (Fig. 1.)
-    lower_limit = 40
-    upper_limit = 50
+    # lower_limit = 40
+    upper_limit = 35
 
     if best_Qvalue > upper_limit:
         print("transmembrane protein")
     else:
         print("globular protein")
         os._exit(1)
-    '''
+    
 
     # Membrane positioning
     '''
@@ -94,7 +94,7 @@ if __name__ == "__main__":
     # df.drop(df.columns[-3:], axis=1, inplace=True) # Remove the last three columns 
     # step 1: and the normal vector becomes the Z-axis (rotate).
     z_axis = np.array([0, 0, 1])
-    rotation_matrix = trans.get_rotation_matrix(vec1=best_vector, vec2=z_axis)
+    rotation_matrix = trans.get_rotation_matrix(vec1=(best_vector-com), vec2=z_axis)
     df = trans.rotate_df(df, rotation_matrix)
 
     # step 2: iterate on tk and cmb (complexity: ~7500)
@@ -134,8 +134,22 @@ if __name__ == "__main__":
                     best_tk = tk
                     best_cmb = cmb
     
-    print(best_Qvalue)
-                
+    
+    # output: pdb file
+    if args.o:
+        df_A = ppdb.df['ATOM']
+        df_A = df_A[df_A['chain_id'] == 'A']
+        df_A = trans.translate_df(df_A, com)
+        df_A = trans.rotate_df(df_A, rotation_matrix)
+
+        ppdb.df['ATOM'] = df_A
+        ppdb.to_pdb(path=args.o, 
+                records=None, 
+                gz=False, 
+                append_newline=True)
+        
+        draw_mb.draw_mb(best_cmb, best_tk, args.o)
+
         
  
 

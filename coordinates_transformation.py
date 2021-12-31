@@ -1,4 +1,6 @@
 import numpy as np
+from scipy.spatial.transform import Rotation as R
+
 
 def translate_df(df, vector):
 	"""Translate the coordinate system of pdb dataframe with a vector.
@@ -27,7 +29,6 @@ def rotate_df(df, matrix):
 	return 	df_rotated
 
 
-
 def get_rotation_matrix(vec1, vec2):
 	""" Find the rotation matrix that aligns vec1 to vec2.
 
@@ -44,4 +45,3 @@ def get_rotation_matrix(vec1, vec2):
 	kmat = np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]])
 	rotation_matrix = np.eye(3) + kmat + kmat.dot(kmat) * ((1 - c) / (s ** 2))
 	return rotation_matrix
-
