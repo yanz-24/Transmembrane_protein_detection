@@ -5,7 +5,6 @@ from Bio.PDB.DSSP import DSSP
 def prepare_pdb(ppdb, pdb_file=False) :
 
     # Initialize a PandasPdb object + fetch PDB file
-    print(ppdb.df.head())
     df_pdb = ppdb.df['ATOM']
     df_pdb = df_pdb[df_pdb['chain_id'] == 'A']
 
