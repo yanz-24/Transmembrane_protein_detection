@@ -67,18 +67,18 @@ if __name__ == "__main__":
     3. upper limit < Q-value: transmembrane protein (alpha, beta, coil according to the DSSP algorithm)
     
     ignore case 2 to make a binary classification
-    '''
+    
 
     # threshold in article (Fig. 1.)
     # lower_limit = 40
     upper_limit = 35
 
     if best_Qvalue > upper_limit:
-        print("transmembrane protein")
+        print("This is a transmembrane protein.")
     else:
-        print("globular protein")
+        print("This is a globular protein.")
         os._exit(1)
-    
+    '''
 
     # Membrane positioning
     '''
@@ -149,36 +149,3 @@ if __name__ == "__main__":
                 append_newline=True)
         
         draw_mb.draw_mb(best_cmb, best_tk, args.o)
-
-        
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    '''
-    for col in df.columns:
-        print(col)
-
-    print('-------------------------------')
-    for col in ppdb.df.columns:
-        print(col)
-    
-    # output: pdb file
-    ppdb._df = df
-    ppdb.to_pdb(path=args.o, 
-            records=None, 
-            gz=False, 
-            append_newline=True)
-    '''
