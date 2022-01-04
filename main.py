@@ -57,7 +57,6 @@ if __name__ == "__main__":
 
     # determine the best normal vector of membrane
     best_Qvalue, best_vector = obj.get_best_vector(df, com, fibo_sphere)
-    print(best_Qvalue)
 
     # Classification of protein
     '''
@@ -67,7 +66,7 @@ if __name__ == "__main__":
     3. upper limit < Q-value: transmembrane protein (alpha, beta, coil according to the DSSP algorithm)
     
     ignore case 2 to make a binary classification
-    
+    '''
 
     # threshold in article (Fig. 1.)
     # lower_limit = 40
@@ -78,7 +77,7 @@ if __name__ == "__main__":
     else:
         print("This is a globular protein.")
         os._exit(1)
-    '''
+    
 
     # Membrane positioning
     '''
