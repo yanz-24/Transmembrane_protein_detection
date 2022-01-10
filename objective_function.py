@@ -1,4 +1,5 @@
 import numpy as np
+import fibonacci_sphere as fibo
 
 
 def hydrophobic_factor(df):
@@ -103,3 +104,28 @@ def calculate_Qvalue(df_slice):
     """
     qvalue = hydrophobic_factor(df_slice) * straightness_factor(df_slice) * turn_factor(df_slice)
     return qvalue
+
+
+def get_best_vector(df, com, fibo_sphere):
+    best_vector = fibo_sphere[0]
+    best_Qvalue = 0
+    for vector in fibo_sphere:
+        # add the slice number of each residue
+        df_current_vector = fibo.slicing(df, vector, com)
+        # check if the residues are straight
+        add_is_straight(df_current_vector)
+        
+        # calculate the Q-value of each slice of a vector
+        df_grouped = df_current_vector.groupby(['slice'])
+        list_qvalue_1a = list() # list of Q-value of each slice 
+        for name, group in df_grouped:
+            qvalue_1a = calculate_Qvalue(group)
+            list_qvalue_1a.append(qvalue_1a)
+        
+        # calculate the Q-value of a 22A window of a vector
+        for i in range(len(list_qvalue_1a)-22):
+            qvalue_22a = sum(list_qvalue_1a[i:(i+22)])
+            if qvalue_22a > best_Qvalue: # if find a better Qvalue
+                best_Qvalue = qvalue_22a
+                best_vector = vector
+    return [best_Qvalue, best_vector]
