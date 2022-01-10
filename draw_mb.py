@@ -20,5 +20,3 @@ def draw_mb(cmb, tk, filepath):
             outfile.write(line)
             line = f'\nHETATM{i:>5d}  N   DUM A5000    {x:8.3f}{y:8.3f}{z_upper:8.3f}'
             outfile.write(line)
-
-draw_mb(1, 38, '/mnt/d/M2/python2_project/bad.pdb')
