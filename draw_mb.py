@@ -3,6 +3,9 @@ import numpy as np
 import math
 
 def random_point_in_circle():
+    """
+    return x and y coordinates in a cycle of radius 400
+    """
     length = np.sqrt(np.random.uniform(0, 400))
     angle = np.pi * np.random.uniform(0, 2)
     x = length * np.cos(angle)
@@ -11,6 +14,14 @@ def random_point_in_circle():
 
 
 def draw_mb(cmb, tk, filepath):   
+    """
+    write membrane entries (represented by O and N atoms) to the output file
+    
+    input:
+    - cmb: center of membrane
+    - tk: membrane thickness
+    - filepath: path of output file
+    """
     z_upper = cmb + tk / 2
     z_lower = cmb - tk / 2
     with open(filepath, 'a') as outfile:

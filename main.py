@@ -136,15 +136,19 @@ if __name__ == "__main__":
     
     # output: pdb file
     if args.o:
+        # keep only chain A
         df_A = ppdb.df['ATOM']
         df_A = df_A[df_A['chain_id'] == 'A']
+        # transformation
         df_A = trans.translate_df(df_A, com)
         df_A = trans.rotate_df(df_A, rotation_matrix)
 
+        # save output file in pdb
         ppdb.df['ATOM'] = df_A
         ppdb.to_pdb(path=args.o, 
                 records=None, 
                 gz=False, 
                 append_newline=True)
         
+        # draw membrane to output file
         draw_mb.draw_mb(best_cmb, best_tk, args.o)

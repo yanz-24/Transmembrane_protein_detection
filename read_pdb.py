@@ -6,7 +6,7 @@ def prepare_pdb(ppdb, pdb_file=False) :
 
     # Initialize a PandasPdb object + fetch PDB file
     df_pdb = ppdb.df['ATOM']
-    df_pdb = df_pdb[df_pdb['chain_id'] == 'A']
+    df_pdb = df_pdb[df_pdb['chain_id'] == 'A'] # keep only chain A
 
     # Save DSSP in dataframe
     p = PDBParser()

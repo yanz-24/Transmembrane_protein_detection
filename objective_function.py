@@ -107,6 +107,14 @@ def calculate_Qvalue(df_slice):
 
 
 def get_best_vector(df, com, fibo_sphere):
+    """
+    return the best Q value and the best normal vector of a protein
+
+    input:
+    - df: pdb dataframe
+    - com: center of mass
+    - fibo_sphere: a list of 3D vectors returned by fibo.fibonacci_sphere function
+    """
     best_vector = fibo_sphere[0]
     best_Qvalue = 0
     for vector in fibo_sphere:
