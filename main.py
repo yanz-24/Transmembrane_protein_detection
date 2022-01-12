@@ -1,11 +1,8 @@
 import argparse
-from numpy.core.defchararray import lower
 import pandas as pd
 from pathlib import Path
 import os
 import numpy as np
-# import matplotlib.pyplot as plt
-
 from biopandas.pdb import PandasPdb
 from Bio.PDB import PDBList
 
@@ -19,7 +16,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-i", default=False, help="input file (.pdb)")
 parser.add_argument("-id", default=False, help="pdb code")
 parser.add_argument("-o", help="output file (.pdb)")
-parser.add_argument("-pt", default=10, type=int, help="number of points in fibonnaci sphere <int> (default=10)")
+parser.add_argument("-pt", default=100, type=int, help="number of points in fibonnaci sphere <int> (default=100)")
 args = parser.parse_args()
 
 # show every row
@@ -68,7 +65,7 @@ if __name__ == "__main__":
     ignore case 2 to make a binary classification
     '''
 
-    # threshold in article (Fig. 1.)
+    # threshold in article see README refrence (Fig.1.)
     # lower_limit = 40
     upper_limit = 35
 

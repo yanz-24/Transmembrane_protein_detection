@@ -1,6 +1,4 @@
 import numpy as np
-from scipy.spatial.transform import Rotation as R
-
 
 def translate_df(df, vector):
 	"""Translate the coordinate system of pdb dataframe with a vector.

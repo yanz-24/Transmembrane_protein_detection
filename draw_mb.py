@@ -1,6 +1,5 @@
-import random
 import numpy as np
-import math
+
 
 def random_point_in_circle():
     """

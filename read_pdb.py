@@ -8,7 +8,7 @@ def prepare_pdb(ppdb, pdb_file=False) :
     df_pdb = ppdb.df['ATOM']
     df_pdb = df_pdb[df_pdb['chain_id'] == 'A'] # keep only chain A
 
-    # Save DSSP in dataframe
+    # Save dssp in dataframe
     p = PDBParser()
     structure = p.get_structure('name', pdb_file)
 
@@ -24,8 +24,8 @@ def prepare_pdb(ppdb, pdb_file=False) :
     df_pdb['residue_number']= df_pdb['residue_number'].astype(int)
     df_pdb_acc = df_dssp_acc.merge(right=df_pdb, how='left', left_on=0, right_on='residue_number')
 
-    # remove all the atoms with ACC < 0
-    df_pdb_acc_clean = df_pdb_acc[df_pdb_acc[3] > 0]
+    # remove all the atoms with ACC < 0.3
+    df_pdb_acc_clean = df_pdb_acc[df_pdb_acc[3] > 0.3]
 
     # select Ca from pdb
     df_pdb_CA = df_pdb_acc_clean[df_pdb_acc_clean['atom_name'] == 'CA']
@@ -33,4 +33,3 @@ def prepare_pdb(ppdb, pdb_file=False) :
 
     return df_pdb_CA
     
-#package free sassa pour la relative acc

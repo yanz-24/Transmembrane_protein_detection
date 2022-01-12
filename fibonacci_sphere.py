@@ -47,7 +47,7 @@ def point2vector(vector, point, center):
             because we translate the spatial coordinate system so that 
             the  centre of mass becomes the origin of the coordinates
     '''
-    # convert into numpy array
+    # convert to numpy array
     vector = np.array(vector)
     point = np.array(point)
     center = np.array(center)
