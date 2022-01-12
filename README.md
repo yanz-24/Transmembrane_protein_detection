@@ -1,8 +1,8 @@
 # TRANSMEMBRANE PROTEIN DETECTION
 
 This python program identifies transmembrane regions of proteins, some of its features include:
-- ...
-- ...
+- Finding the orientation of the protein in a membrane  
+- Indicating the position of the lipid bi-layer
 
 
 ## Development environment
@@ -40,9 +40,10 @@ Authors
 -----------------------------------------------------------------------------
 - Sabrina SAFAR-REMALI  
 - Yanyuan ZHANG
+- This work was inspired by the algorithm described in the following  article:
+- Tusnády GE, Dosztányi Z, Simon I. Transmembrane proteins in the Protein Data Bank: identification and classification. Bioinformatics. 2004 Nov 22;20(17):2964-72. doi: 10.1093/bioinformatics/bth340. Epub 2004 Jun 4. PMID: 15180935.
 
-
-GitLab
+GitLab repository
 -----------------------------------------------------------------------------
 You can find our source code repository and demo files on GitLab 
 at [https://gitlab.com/sab.s/python2_project](https://gitlab.com/sab.s/python2_project). 
