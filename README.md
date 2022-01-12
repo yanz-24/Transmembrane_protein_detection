@@ -17,7 +17,7 @@ $ conda activate TMDET
 To calculate secondary structure and accessibility, you need to download DSSP (see https://swift.cmbi.umcn.nl/gv/dssp/)  
 install DSSP on Linux:
 ```
-sudo apt-get install dssp
+$ sudo apt-get install dssp
 ```
 
 Usage
@@ -25,15 +25,15 @@ Usage
 - required arguments:  
   -i I        input file (pdb)  
   -id ID      pdb id 
-
+  -o O        output file 
 - optional arguments:  
   -h, --help  show this help message and exit  
   -pt PT      number of points in fibonnaci sphere (default=1000)
 
 run in terminal (example):
 ```
-python3 main.py -id 1XYZ
-python3 main.py -i 1XYZ.pdb
+$ python3 main.py -id 1XYZ 
+$ python3 main.py -i 1XYZ.pdb -o output.pdb
 ```
 
 Authors
@@ -47,3 +47,6 @@ GitLab repository
 -----------------------------------------------------------------------------
 You can find our source code repository and demo files on GitLab 
 at [https://gitlab.com/sab.s/python2_project](https://gitlab.com/sab.s/python2_project). 
+
+
+scipy 

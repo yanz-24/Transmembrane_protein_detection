@@ -9,3 +9,5 @@ dependencies:
   - biopandas=0.2.9
   - matplotlib=3.5.1
   - biopython=1.79
+  - scipy
+
