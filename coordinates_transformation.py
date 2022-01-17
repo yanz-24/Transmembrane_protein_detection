@@ -18,14 +18,15 @@ def rotate_df(df, matrix):
 
 	:param df: Pdb pandas dataframe containing 3D coordinates of atoms
 	:param vector: rotation matrix (3x3)
-	:return df_rotated: df with rotated coordinates
+	:return df
 	"""
-	df_rotated = df
-	df_rotated["x_coord"] = df["x_coord"] * matrix[0,0] + df["y_coord"] * matrix[0,1] + df["z_coord"] * matrix[0,2]
-	df_rotated["y_coord"] = df["x_coord"] * matrix[1,0] + df["y_coord"] * matrix[1,1] + df["z_coord"] * matrix[1,2]
-	df_rotated["z_coord"] = df["x_coord"] * matrix[2,0] + df["y_coord"] * matrix[2,1] + df["z_coord"] * matrix[2,2]
-	return 	df_rotated
-
+	for index, row in df.iterrows():
+		vec = np.array([df.loc[index,"x_coord"], df.loc[index,"y_coord"], df.loc[index,"z_coord"]])
+		cross_prod = np.dot(vec, matrix)
+		df.at[index,"x_coord"] = cross_prod[0]
+		df.at[index,"y_coord"] = cross_prod[1]
+		df.at[index,"z_coord"] = cross_prod[2]
+	return 	df
 
 def get_rotation_matrix(vec1, vec2):
 	""" Find the rotation matrix that aligns vec1 to vec2.

@@ -24,7 +24,7 @@ def draw_mb(cmb, tk, filepath):
     z_upper = cmb + tk / 2
     z_lower = cmb - tk / 2
     with open(filepath, 'a') as outfile:
-        for i in range(5000, 5500):
+        for i in range(5000, 6000):
             x,y = random_point_in_circle()
             line = f'\nHETATM{i:>5d}  O   DUM A5000    {x:8.3f}{y:8.3f}{z_lower:8.3f}'
             outfile.write(line)

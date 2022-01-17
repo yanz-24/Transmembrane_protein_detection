@@ -130,7 +130,7 @@ if __name__ == "__main__":
                     best_tk = tk
                     best_cmb = cmb
     
-    
+
     # output: pdb file
     if args.o:
         # keep only chain A
@@ -143,7 +143,7 @@ if __name__ == "__main__":
         # save output file in pdb
         ppdb.df['ATOM'] = df_A
         ppdb.to_pdb(path=args.o, 
-                records=None, 
+                records=['ATOM'], 
                 gz=False, 
                 append_newline=True)
         
